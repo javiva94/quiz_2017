@@ -242,6 +242,7 @@ exports.random_comprobar = function(req, res, next){
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
     if(result){
         req.session.score++;
+	score++;
     }else{
         req.session.score=0;
         req.session.questions=[-1];
