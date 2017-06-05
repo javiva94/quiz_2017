@@ -205,7 +205,8 @@ exports.random_jugar = function(req, res, next){
 
             if(quizzes.length !== 0) {
 
-                var quiz_total = quizzes[0];
+                var quiz_total = quizzes[parseInt(Math.round(Math.random() * (quizzes.length)))];
+
                 if(quiz_total){
                     req.quiz = quiz_total;
                     res.render('quizzes/random_play', {
@@ -245,6 +246,7 @@ exports.random_comprobar = function(req, res, next){
 	score++;
     }else{
         req.session.score=0;
+	score=0;
         req.session.questions=[-1];
     }
     res.render('quizzes/random_result', {
