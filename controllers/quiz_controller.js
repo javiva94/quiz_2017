@@ -6,9 +6,9 @@ var paginate = require('../helpers/paginate').paginate;
 // Autoload el quiz asociado a :quizId
 exports.load = function (req, res, next, quizId) {
 
-    models.Quiz.findById(quizId, {   //modificado por Santiago Pavon
+    models.Quiz.findById(quizId, {
         include: [
-            {model: models.Tip, include: [{model: models.User, as: 'Author'}]},
+            {model: models.Tip, include:[{model: models.User, as: 'Author'}]},
             {model: models.User, as: 'Author'}
         ]
     })
@@ -240,7 +240,7 @@ exports.random_jugar = function(req, res, next){
 
             if(quizzes.length !== 0) {
 
-                var quiz_total = quizzes[0];
+                var quiz_total = quizzes[parseInt(Math.round(Math.random() * (quizzes.length)))];
                 if(quiz_total){
                     req.quiz = quiz_total;
                     res.render('quizzes/random_play', {
@@ -277,8 +277,10 @@ exports.random_comprobar = function(req, res, next){
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
     if(result){
         req.session.score++;
+        score++;
     }else{
         req.session.score=0;
+        score=0;
         req.session.questions=[-1];
     }
     res.render('quizzes/random_result', {
