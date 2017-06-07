@@ -187,9 +187,8 @@ exports.check = function (req, res, next) {
         answer: answer
     });
 };
-//GET /quizzes/random_jugar
-exports.random_jugar = function(req, res, next){
-
+// GET /quizzes/randomplay
+exports.random_jugar = function (req, res, next) {
     var answer = req.query.answer || '';
     if(!req.session.score)req.session.score=0;
     if(!req.session.questions)req.session.questions=[-1];
@@ -233,8 +232,39 @@ exports.random_jugar = function(req, res, next){
 
 
 
-//GET /quizzes/random_comprobar
-exports.random_comprobar = function(req, res, next){
+
+
+// GET /quizzes/:quizId/check
+exports.check = function (req, res, next) {
+
+    var answer = req.query.answer || "";
+
+    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+
+    res.render('quizzes/result', {
+        quiz: req.quiz,
+        result: result,
+        answer: answer
+    });
+};
+
+var score = 0;
+var count = 0;
+var totalLen = 0;
+var questionsMade = [0];
+models.Quiz.count().then(function(quizzes) {
+    for (var i = 0; i < quizzes; i++) {
+        questionsMade.push(i + 1);
+    }
+    count = quizzes;
+    totalLen = quizzes;
+}).catch(function(err) {
+    console.log(err);
+});
+
+// GET /quizzes/:quizId/randomcheck
+exports.random_comprobar = function (req, res, next) {
+
     if(!req.session.score) req.session.score=0;
     var score = req.session.score;
     req.session.questions.push(req.quiz.id);
@@ -243,10 +273,10 @@ exports.random_comprobar = function(req, res, next){
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
     if(result){
         req.session.score++;
-	score++;
+        score++;
     }else{
         req.session.score=0;
-	score=0;
+        score=0;
         req.session.questions=[-1];
     }
     res.render('quizzes/random_result', {
